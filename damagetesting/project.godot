@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="damagetesting"
-run/main_scene="uid://dhxqil3huwyl6"
+run/main_scene="uid://cunk0mlx0l28a"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
