@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://cunk0mlx0l28a"]
+
+[ext_resource type="Script" path="res://testlevel.gd" id="1_74kyy"]
+[ext_resource type="PackedScene" path="res://enemy.tscn" id="1_pi5jr"]
+[ext_resource type="PackedScene" path="res://player.tscn" id="2_74kyy"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_74kyy")
+
+[node name="Enemy" parent="." instance=ExtResource("1_pi5jr")]
+position = Vector2(819, 367)
+
+[node name="Player" parent="." instance=ExtResource("2_74kyy")]
+position = Vector2(366, 378)
