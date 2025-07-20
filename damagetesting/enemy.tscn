@@ -1,39 +1,41 @@
 [gd_scene load_steps=5 format=3 uid="uid://dj7i70ks6sw7a"]
 
 [ext_resource type="Script" uid="uid://xe6561lf4v3t" path="res://enemy.gd" id="1_4gyqm"]
-[ext_resource type="Texture2D" uid="uid://bafghqpmjsj26" path="res://icon.svg" id="1_7k104"]
+[ext_resource type="Texture2D" uid="uid://cfk78ix3rl16u" path="res://NotTestPlayerSprite.png" id="2_4gyqm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4gyqm"]
-size = Vector2(32, 32)
+size = Vector2(16, 14)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4gyqm"]
-radius = 23.0
 
 [node name="Enemy" type="CharacterBody2D" groups=["Enemy"]]
+collision_layer = 4
 script = ExtResource("1_4gyqm")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("1_7k104")
+texture_filter = 1
+texture = ExtResource("2_4gyqm")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_4gyqm")
 
 [node name="LeftDownCast" type="RayCast2D" parent="."]
-position = Vector2(-16, 0)
-target_position = Vector2(0, 17)
+position = Vector2(-8, 0)
+target_position = Vector2(0, 9)
 
 [node name="RightDownCast" type="RayCast2D" parent="."]
-position = Vector2(16, 0)
-target_position = Vector2(0, 17)
+position = Vector2(8, 0)
+target_position = Vector2(0, 9)
 
 [node name="LeftCast" type="RayCast2D" parent="."]
-target_position = Vector2(-17, 0)
+target_position = Vector2(-9, 0)
 
 [node name="RightCast" type="RayCast2D" parent="."]
-target_position = Vector2(17, 0)
+target_position = Vector2(9, 0)
 
 [node name="AttackArea" type="Area2D" parent="."]
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
 shape = SubResource("CircleShape2D_4gyqm")

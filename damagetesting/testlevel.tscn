@@ -9,9 +9,6 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_74kyy")
 
-[node name="Enemy" parent="." instance=ExtResource("1_pi5jr")]
-position = Vector2(819, 367)
-
 [node name="Player" parent="." instance=ExtResource("2_74kyy")]
 position = Vector2(366, 378)
 
@@ -39,5 +36,11 @@ rotation = 1.5708
 script = ExtResource("5_b5yu0")
 player_path = NodePath("../Player")
 
-[node name="Enemy2" parent="." instance=ExtResource("1_pi5jr")]
-position = Vector2(533, 373)
+[node name="Enemy3" parent="." instance=ExtResource("1_pi5jr")]
+position = Vector2(132, 410)
+
+[node name="Enemy4" parent="." instance=ExtResource("1_pi5jr")]
+position = Vector2(230, 266)
+
+[node name="Enemy5" parent="." instance=ExtResource("1_pi5jr")]
+position = Vector2(550, 241)

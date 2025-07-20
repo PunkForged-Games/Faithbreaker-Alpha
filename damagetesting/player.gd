@@ -12,6 +12,10 @@ var attack_color: Color = Color.RED
 var is_invincible = false
 var invincibility_timer: float = 0.0
 @export var INVINCIBILITY_TIME: float = 0.5
+@export var KNOCKBACK_FORCE: float = 800.0
+var is_damaged: bool = false
+var is_damaged_timer: float = 0.0
+@export var IS_DAMAGED_DURATION: float = 0.5
 
 # Movement Variables
 @export_group("Movement Settings")
@@ -42,7 +46,6 @@ var current_position: Vector2 = Vector2.ZERO
 @export var DASH_COOLDOWN: float = 0.3
 
 # === STATE ===
-#
 # Jump State Controllers
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
@@ -69,6 +72,11 @@ var attack_cooldown_timer: float = 0.0
 # === Signals ===
 signal deal_damage(damage: int, target: Node)
 
+# *===*===*{ DEVELOPMENT }*===*===*
+@onready var is_developer: bool = true
+@onready var respawn_pos: Vector2 = self.global_position
+
+
 
 func _ready() -> void:
 	add_to_group("Player")
@@ -83,6 +91,12 @@ func _physics_process(delta: float) -> void:
 	current_position = global_position
 	var input_dir = get_input_vector()
 	handle_timers(delta)
+	if is_damaged:
+		handle_timers(delta)
+		print(str(is_damaged_timer))
+		attack_time_control(delta)
+		print(str(velocity))
+		return
 	if is_dashing:
 		handle_dash(delta)
 	else:
@@ -100,7 +114,11 @@ func _physics_process(delta: float) -> void:
 func _process(_delta: float) -> void:
 	var interpolation_weight = Engine.get_physics_interpolation_fraction()
 	var visual_position = previous_position.lerp(current_position, interpolation_weight)
-	$Sprite2D.global_position = visual_position 
+	$Sprite2D.global_position = visual_position
+	if is_invincible:
+		self.modulate = Color(1, 1, 1, 0.5)
+	else:
+		self.modulate = Color(1, 1, 1, 1)
 
 func get_input_vector() -> Vector2:
 	var input = Vector2.ZERO
@@ -154,6 +172,8 @@ func attack_time_control(delta: float) -> void:
 	attack_timer -= delta
 	if attack_timer <= 0:
 		is_attacking = false
+	if is_damaged_timer <= 0:
+		is_damaged = false
 
 func attack_cleanup():
 	if is_attacking == false:
@@ -238,11 +258,15 @@ func handle_timers(delta: float) -> void:
 		invincibility_timer -= delta
 		if invincibility_timer <= 0:
 			is_invincible = false
+	if is_damaged_timer > 0:
+		is_damaged_timer -= delta
 
 # === GROUND / WALL DETECTION ===
 func update_state() -> void:
 	if is_on_floor() and not is_touching_wall():
 		coyote_timer = COYOTE_TIME
+	if is_damaged:
+		is_invincible = true
 
 func is_touching_wall() -> bool:
 	return wall_check_left.is_colliding() or wall_check_right.is_colliding()
@@ -255,13 +279,26 @@ func _on_attack_area_body_entered(body: Node) -> void:
 func _on_enemy_deal_damage(damage: int, target: Node) -> void:
 	if target != self:
 		return
-
-	health -= damage
-	print("Player took ", damage, " damage! Health is now: ", health)
-
-	if health <= 0:
-		die()
+	if !is_invincible:
+		health -= damage
+		print("Player took ", damage, " damage! Health is now: ", health)
+		is_damaged = true
+		is_invincible = true
+		is_damaged_timer = IS_DAMAGED_DURATION
+		invincibility_timer = INVINCIBILITY_TIME
+		if target is Node2D and target.has_method("global_position"):
+			var knock_dir = sign(global_position.x - target.global_position.x)
+			velocity.x = knock_dir * KNOCKBACK_FORCE
+			velocity.y = -KNOCKBACK_FORCE * 0.5
+		if health <= 0:
+			die()
+	else:
+		return
 
 func die() -> void:
 	print("Player died.")
-	queue_free()
+	if is_developer:
+		self.global_position = respawn_pos
+		health = 100
+	else:
+		queue_free()
