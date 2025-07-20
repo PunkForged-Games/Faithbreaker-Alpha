@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var player = $Player
+@onready var health_bar = $UILayer/CanvasLayer/MarginContainer/HealthBar
 
 func _ready():
 	# Connect already existing enemies
@@ -9,6 +10,18 @@ func _ready():
 
 	# Listen for dynamically added enemies
 	get_tree().connect("node_added", Callable(self, "_on_node_added"))
+
+func _process(_delta):
+	health_bar.value = player.health
+	# Change color based on health %
+	var percent = float(player.health) / float(health_bar.max_value)
+	if percent < 0.25:
+		health_bar.add_theme_color_override("fg", Color.RED)
+	elif percent < 0.5:
+		health_bar.add_theme_color_override("fg", Color.ORANGE)
+	else:
+		health_bar.add_theme_color_override("fg", Color.GREEN)
+	print(health_bar.value)
 
 func _on_node_added(node: Node) -> void:
 	if node.is_in_group("Enemy"):

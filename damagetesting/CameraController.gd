@@ -42,14 +42,14 @@ func _process(delta):
 
 	# Final target with offset
 	var target_pos = player_pos + _current_offset
-	var offset = target_pos - global_position
+	var camera_offset = target_pos - global_position
 
 	# Deadzone clamp
 	var deadzone_half = deadzone_size * 0.5
-	if abs(offset.x) > deadzone_half.x:
-		global_position.x += (offset.x - sign(offset.x) * deadzone_half.x) * delta * follow_speed
-	if abs(offset.y) > deadzone_half.y:
-		global_position.y += (offset.y - sign(offset.y) * deadzone_half.y) * delta * follow_speed
+	if abs(camera_offset.x) > deadzone_half.x:
+		global_position.x += (camera_offset.x - sign(camera_offset.x) * deadzone_half.x) * delta * follow_speed
+	if abs(camera_offset.y) > deadzone_half.y:
+		global_position.y += (camera_offset.y - sign(camera_offset.y) * deadzone_half.y) * delta * follow_speed
 
 	# Shake
 	if shake_intensity > 0.01:

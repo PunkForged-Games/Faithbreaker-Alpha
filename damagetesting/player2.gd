@@ -101,7 +101,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	update_state()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	_interpolate_sprite_position()
 	_update_invincibility_visual()
 

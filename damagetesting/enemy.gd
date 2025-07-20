@@ -89,7 +89,7 @@ func hitbox_toggle() -> void:
 	attack_area.monitoring = is_attacking
 
 func is_player_in_range() -> bool:
-	return player != null and global_position.distance_to(player.global_position) < 150.0
+	return player != null and global_position.distance_to(player.global_position) < 80.0
 
 func start_attack() -> void:
 	has_hit_during_attack = false
