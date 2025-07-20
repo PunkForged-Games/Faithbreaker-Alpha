@@ -9,8 +9,8 @@ _limits = [0.0, 1.0, 0.0, 1.5]
 _data = [Vector2(0, 0.708621), 0.0, 0.0, 0, 0, Vector2(0.376518, 0.49569), 0.0, 0.0, 0, 0, Vector2(1.5, 0.20431), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_onrkg"]
-size = Vector2(32, 32)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_i3pqv"]
+radius = 8.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hqtel"]
 size = Vector2(32, 32)
@@ -36,13 +36,13 @@ width_curve = SubResource("Curve_i3pqv")
 script = ExtResource("2_i3pqv")
 
 [node name="WallCheckL" type="RayCast2D" parent="."]
-target_position = Vector2(-22, 0)
+target_position = Vector2(-9, 0)
 
 [node name="WallCheckR" type="RayCast2D" parent="."]
-target_position = Vector2(22, 0)
+target_position = Vector2(9, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_onrkg")
+shape = SubResource("CapsuleShape2D_i3pqv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
