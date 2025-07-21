@@ -1,0 +1,127 @@
+[gd_scene load_steps=12 format=3 uid="uid://cr4xnene5qacq"]
+
+[ext_resource type="Script" uid="uid://k7giox06qsah" path="res://Scripts/player2.gd" id="1_i3pqv"]
+[ext_resource type="Script" uid="uid://byfd18htgxnjw" path="res://Scripts/trail_2d.gd" id="2_i3pqv"]
+[ext_resource type="Texture2D" uid="uid://dwa0mjvdt17cj" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/enemy_sprite.png" id="3_i3pqv"]
+[ext_resource type="Texture2D" uid="uid://dn5spaol5iv1f" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0241.png" id="4_x3wgy"]
+[ext_resource type="Texture2D" uid="uid://deewpmr2imvwy" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0244.png" id="5_3smsa"]
+[ext_resource type="Texture2D" uid="uid://banmq1xx4cklu" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0242.png" id="6_8erm5"]
+
+[sub_resource type="Curve" id="Curve_i3pqv"]
+_limits = [0.0, 1.0, 0.0, 1.5]
+_data = [Vector2(0.0191489, 0.708621), 0.0, 0.0, 0, 0, Vector2(0.376596, 0.484483), 0.0, 0.0, 0, 0, Vector2(1.5, 0.20431), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_x3wgy"]
+offsets = PackedFloat32Array(0.035533, 0.152284, 0.279188, 0.908629)
+colors = PackedColorArray(0.941176, 0, 0, 0, 0.941176, 0, 0, 1, 0.940362, 5.34251e-06, 3.85046e-07, 1, 0.941176, 0, 0, 0.309804)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
+radius = 7.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hqtel"]
+size = Vector2(32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6t5aa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_x3wgy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_3smsa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_x3wgy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_8erm5")
+}],
+"loop": true,
+"name": &"Level1",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_i3pqv")
+ATTACK_DMG = 35
+ATTACK_COOLDOWN_TIME = 0.2
+GRAVITY = 1400.0
+MAX_SPEED = 300.0
+ACCEL = 1000.0
+FRICTION = 1200.0
+AIR_DRAG = 400.0
+JUMP_VELOCITY = -550.0
+COYOTE_TIME = 0.15
+JUMP_BUFFER_TIME = 0.3
+WALL_JUMP_FORCE = Vector2(450, -300)
+DASH_SPEED = 400.0
+
+[node name="Trail2D" type="Line2D" parent="."]
+position = Vector2(0, 10)
+width_curve = SubResource("Curve_i3pqv")
+default_color = Color(1, 0, 0, 1)
+gradient = SubResource("Gradient_x3wgy")
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+script = ExtResource("2_i3pqv")
+
+[node name="WallCheckL" type="RayCast2D" parent="."]
+position = Vector2(0, 8)
+target_position = Vector2(-9, 0)
+
+[node name="WallCheckR" type="RayCast2D" parent="."]
+position = Vector2(0, 8)
+target_position = Vector2(9, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 9)
+shape = SubResource("CircleShape2D_x3wgy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("3_i3pqv")
+
+[node name="AttackAreaR" type="Area2D" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackAreaR"]
+position = Vector2(32, 0)
+shape = SubResource("RectangleShape2D_hqtel")
+
+[node name="AttackAreaL" type="Area2D" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackAreaL"]
+position = Vector2(-32, 0)
+shape = SubResource("RectangleShape2D_hqtel")
+
+[node name="AttackRightDebugText" type="ColorRect" parent="."]
+visible = false
+offset_left = 16.0
+offset_top = -16.0
+offset_right = 48.0
+offset_bottom = 16.0
+
+[node name="AttackLeftDebugText" type="ColorRect" parent="."]
+visible = false
+offset_left = -48.0
+offset_top = -16.0
+offset_right = -16.0
+offset_bottom = 16.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 8)
+sprite_frames = SubResource("SpriteFrames_6t5aa")
+animation = &"Level1"
+autoplay = "Level1"
+frame_progress = 0.508302
