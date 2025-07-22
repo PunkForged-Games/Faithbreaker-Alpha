@@ -4,7 +4,7 @@ extends CharacterBody2D
 
 # === Attack Variables ===
 @export_group("Attack Settings")
-@export var ATTACK_DAMAGE: int = 10
+@export var ATTACK_DAMAGE: int = 15
 @export var health: int = 100
 @export var ATTACK_COOLDOWN: float = 2.0
 @export var ATTACK_DURATION: float = 0.2
@@ -12,6 +12,7 @@ extends CharacterBody2D
 @export var ATTACK_SPEED: float = 400.0
 @export var KNOCKBACK_FORCE: float = 200.0
 @export var TAKING_DAMAGE_TIME: float = 0.2
+@export var CORRUPTION_DAMAGE: int = 10
 var has_hit_during_attack = false
 
 # === Physics Variables ===
@@ -129,7 +130,7 @@ func _on_attack_area_body_entered(body: Node) -> void:
 	if body.is_in_group("Player"):
 		var direction = check_player_position()
 		print("Enemy hit player!")
-		emit_signal("deal_damage", ATTACK_DAMAGE, body, direction)
+		emit_signal("deal_damage", ATTACK_DAMAGE, CORRUPTION_DAMAGE, body, direction)
 		has_hit_during_attack = true
 
 func apply_damage(damage: int) -> void:

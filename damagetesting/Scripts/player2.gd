@@ -42,10 +42,13 @@ signal deal_damage(damage: int, target: Node)
 @onready var attack_area_R = $AttackAreaR
 @onready var wall_check_left = $WallCheckL
 @onready var wall_check_right = $WallCheckR
-@onready var attack_r_debug_vfx = $AttackRightDebugText
-@onready var attack_l_debug_vfx = $AttackLeftDebugText
+@onready var wall_jump_down_cast = $WallJumpDownCast
+@onready var wall_jump_up_cast = $WallJumpUpCast
 @onready var sprite = $Sprite2D
 @onready var animated_sprite = $AnimatedSprite2D
+
+@onready var animation_controller = $AnimationController
+@onready var corruption_controller = $CorruptionController
 
 # === STATE VARIABLES ===
 var previous_position: Vector2 = Vector2.ZERO
@@ -63,11 +66,15 @@ var invincibility_timer: float = 0.0
 var is_damaged_timer: float = 0.0
 
 # States
+var can_wall_slide: bool = true
 var is_wall_sliding: bool = false
 var is_dashing: bool = false
 var is_attacking: bool = false
 var is_invincible: bool = false
 var is_damaged: bool = false
+
+# === Corruption Related Variables ===
+@onready var corruption_movement_modf: float 
 
 var dash_direction: Vector2 = Vector2.ZERO
 
@@ -83,6 +90,7 @@ func _ready() -> void:
 	attack_area_R.monitoring = false
 	attack_area_R.body_entered.connect(_on_attack_area_body_entered)
 	modulate = Color.WHITE
+	corruption_movement_modf = 1.0
 
 func _physics_process(delta: float) -> void:
 	previous_position = current_position
@@ -129,15 +137,20 @@ func _process_input_and_movement(delta: float) -> void:
 	attack_time_control(delta)
 	attack_cleanup()
 
+#func _interpolate_sprite_position() -> void:
+	#var weight = Engine.get_physics_interpolation_fraction()
+	#var visual_pos = previous_position.lerp(current_position, weight)
+	#sprite.global_position = visual_pos
+	#animated_sprite.global_position = visual_pos
+	#animated_sprite.global_position.y = animated_sprite.global_position.y + 8
+	#if self.velocity.y < 0.2 && self.velocity.x < 0.2:
+		#animated_sprite.global_position = current_position
+		#animated_sprite.global_position.y = animated_sprite.global_position.y + 8
+
 func _interpolate_sprite_position() -> void:
 	var weight = Engine.get_physics_interpolation_fraction()
 	var visual_pos = previous_position.lerp(current_position, weight)
-	sprite.global_position = visual_pos
-	animated_sprite.global_position = visual_pos
-	animated_sprite.global_position.y = animated_sprite.global_position.y + 8
-	if velocity.y < 1 && velocity.x < 1:
-		animated_sprite.global_position = current_position
-		animated_sprite.global_position.y = animated_sprite.global_position.y + 8
+	animated_sprite.global_position = visual_pos + Vector2(0, 9)
 
 func _update_invincibility_visual() -> void:
 	modulate.a = 0.5 if is_invincible else 1.0
@@ -160,25 +173,49 @@ func _update_facing_direction(dir: Vector2) -> void:
 		animated_sprite.flip_h = true
 
 func handle_movement(input: Vector2, delta: float) -> void:
-	if wall_jump_lock_timer > 0:
-		return
+	# Only block air control during wall jump lock
+	#if wall_jump_lock_timer > 0 and not is_on_floor() and !wall_jump_down_cast.is_colliding() and !wall_jump_up_cast.is_colliding():
+		#
+		#return
 
 	var target_speed = input.x * MAX_SPEED
 	var accel = ACCEL if input.x != 0 else (FRICTION if is_on_floor() else AIR_DRAG)
-	velocity.x = move_toward(velocity.x, target_speed, accel * delta)
+	velocity.x = move_toward(velocity.x, target_speed * corruption_movement_modf, accel * delta)
+	print(str(corruption_movement_modf))
 
 func handle_gravity(delta: float) -> void:
 	if not is_on_floor() and not is_wall_sliding:
 		velocity.y += GRAVITY * delta
 
 func handle_wall_slide() -> void:
-	is_wall_sliding = false
-	if is_touching_wall() and not is_on_floor() and velocity.y > 0:
+	var touching_wall = is_touching_wall()
+	var falling = velocity.y > 0
+	var in_air = not is_on_floor()
+
+	# === Reset wall slide state on floor ===
+	if is_on_floor():
+		is_wall_sliding = false
+		can_wall_slide = true
+		wall_jump_lock_timer = WALL_JUMP_LOCK_TIME
+		return
+
+	# === If already sliding ===
+	if is_wall_sliding:
+		if wall_jump_lock_timer > 0 and touching_wall and in_air and falling:
+			wall_jump_lock_timer -= get_physics_process_delta_time()
+			velocity.y = min(velocity.y, WALL_SLIDE_SPEED)
+		else:
+			is_wall_sliding = false
+			can_wall_slide = false
+		return
+
+	# === Try to enter wall slide ===
+	if touching_wall and in_air and falling and can_wall_slide and wall_jump_lock_timer <= 0:
 		is_wall_sliding = true
-		velocity.y = min(velocity.y, WALL_SLIDE_SPEED)
+		wall_jump_lock_timer = WALL_JUMP_LOCK_TIME
 
 func handle_jumping() -> void:
-	if Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("ui_up"):
+	if Input.is_action_just_pressed("jump"):
 		jump_buffer_timer = JUMP_BUFFER_TIME
 
 	if jump_buffer_timer > 0:
@@ -228,11 +265,11 @@ func start_attack(side: String) -> void:
 	attack_cooldown_timer = ATTACK_COOLDOWN_TIME
 
 	if side == "Left":
-		attack_l_debug_vfx.visible = true
 		attack_area_L.monitoring = true
+		animation_controller.side_attack_animation(-1)
 	elif side == "Right":
-		attack_r_debug_vfx.visible = true
 		attack_area_R.monitoring = true
+		animation_controller.side_attack_animation(1)
 
 func attack_time_control(delta: float) -> void:
 	attack_timer -= delta
@@ -243,8 +280,6 @@ func attack_time_control(delta: float) -> void:
 
 func attack_cleanup() -> void:
 	if not is_attacking:
-		attack_l_debug_vfx.visible = false
-		attack_r_debug_vfx.visible = false
 		attack_area_L.monitoring = false
 		attack_area_R.monitoring = false
 
@@ -266,6 +301,7 @@ func handle_timers(delta: float) -> void:
 		jump_buffer_timer -= delta
 	if wall_jump_lock_timer > 0:
 		wall_jump_lock_timer -= delta
+		#print(str(wall_jump_lock_timer))
 	if dash_cooldown_timer > 0 and is_on_floor():
 		dash_cooldown_timer -= delta
 	if attack_cooldown_timer > 0 and not is_attacking:
@@ -283,13 +319,14 @@ func _on_attack_area_body_entered(body: Node) -> void:
 	if is_attacking and body.is_in_group("Enemy"):
 		emit_signal("deal_damage", ATTACK_DMG, body)
 
-func _on_enemy_deal_damage(damage: int, target: Node2D, direction: int) -> void:
+func _on_enemy_deal_damage(damage: int, corruption_damage: int, target: Node2D, direction: int) -> void:
 	if target != self:
 		return
 	if is_invincible:
 		return
 
 	health -= damage
+	corruption_controller.take_corruption_damage(corruption_damage)
 	print("Player took ", damage, " damage! Health is now: ", health)
 	_apply_knockback(direction)
 	if health <= 0:
