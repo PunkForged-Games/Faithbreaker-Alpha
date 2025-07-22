@@ -1,0 +1,305 @@
+[gd_scene load_steps=31 format=3 uid="uid://cr4xnene5qacq"]
+
+[ext_resource type="Script" uid="uid://k7giox06qsah" path="res://Scripts/player2.gd" id="1_i3pqv"]
+[ext_resource type="Script" uid="uid://1pskfjecq6rc" path="res://Scripts/animation_controller.gd" id="2_gymyn"]
+[ext_resource type="Script" uid="uid://byfd18htgxnjw" path="res://Scripts/trail_2d.gd" id="2_i3pqv"]
+[ext_resource type="Script" uid="uid://djixrps7hrlci" path="res://Scripts/corruption_controller2.gd" id="2_pu2lt"]
+[ext_resource type="Texture2D" uid="uid://dwa0mjvdt17cj" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/enemy_sprite.png" id="3_i3pqv"]
+[ext_resource type="Texture2D" uid="uid://n4mlu1hal054" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0246.png" id="4_tx1dd"]
+[ext_resource type="Texture2D" uid="uid://dn5spaol5iv1f" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0241.png" id="4_x3wgy"]
+[ext_resource type="Texture2D" uid="uid://deewpmr2imvwy" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0244.png" id="5_3smsa"]
+[ext_resource type="Texture2D" uid="uid://7y7xecc2vjxd" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0245.png" id="5_gymyn"]
+[ext_resource type="Texture2D" uid="uid://banmq1xx4cklu" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0242.png" id="6_8erm5"]
+[ext_resource type="Texture2D" uid="uid://cmrseki0sjutx" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/tile_0240.png" id="7_pu2lt"]
+[ext_resource type="Texture2D" uid="uid://bwovhrdeefbtn" path="res://Assets/Characters/_spriteSheets/_devPlayerCharacter/level1/IDLE1-2.png" id="8_ukyrk"]
+[ext_resource type="Texture2D" uid="uid://dxro86o7bk0lw" path="res://Assets/Characters/_spriteSheets/VFX/PlayerFX/Free Smoke Fx  Pixel 04.png" id="13_ukyrk"]
+
+[sub_resource type="Curve" id="Curve_i3pqv"]
+_limits = [0.0, 1.0, 0.0, 1.5]
+_data = [Vector2(0.0191489, 0.708621), 0.0, 0.0, 0, 0, Vector2(0.376596, 0.484483), 0.0, 0.0, 0, 0, Vector2(1.5, 0.20431), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_x3wgy"]
+offsets = PackedFloat32Array(0.035533, 0.152284, 0.279188, 0.908629)
+colors = PackedColorArray(0.941176, 0, 0, 0, 0.941176, 0, 0, 1, 0.940362, 5.34251e-06, 3.85046e-07, 1, 0.941176, 0, 0, 0.309804)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6t5aa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_tx1dd")
+}],
+"loop": true,
+"name": &"Die1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_gymyn")
+}],
+"loop": true,
+"name": &"FallNull1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_8erm5")
+}],
+"loop": true,
+"name": &"FallSide1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_pu2lt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pu2lt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pu2lt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pu2lt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ukyrk")
+}],
+"loop": true,
+"name": &"Idle1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_pu2lt")
+}],
+"loop": true,
+"name": &"JumpNull1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_3smsa")
+}],
+"loop": true,
+"name": &"JumpSide1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_x3wgy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_3smsa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_x3wgy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_8erm5")
+}],
+"loop": true,
+"name": &"Run1",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
+radius = 7.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7dp3o"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ukyrk"]
+radius = 4.12311
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_h4iuc"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fd4e3"]
+radius = 4.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7dp3o"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h4iuc"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fd4e3"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqcod"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_igrcy"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fs7ks"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l6n3p"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_olqyp"]
+atlas = ExtResource("13_ukyrk")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wpjfl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7dp3o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h4iuc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fd4e3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qqcod")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_igrcy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fs7ks")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l6n3p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_olqyp")
+}],
+"loop": false,
+"name": &"default",
+"speed": 20.0
+}]
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_i3pqv")
+ATTACK_DMG = 35
+ATTACK_COOLDOWN_TIME = 0.2
+GRAVITY = 1400.0
+MAX_SPEED = 300.0
+ACCEL = 1000.0
+FRICTION = 1200.0
+AIR_DRAG = 400.0
+JUMP_VELOCITY = -500.0
+COYOTE_TIME = 0.15
+WALL_JUMP_FORCE = Vector2(300, -300)
+WALL_JUMP_LOCK_TIME = 0.8
+DASH_SPEED = 400.0
+
+[node name="CorruptionController" type="Node2D" parent="."]
+script = ExtResource("2_pu2lt")
+
+[node name="AnimationController" type="Node2D" parent="."]
+script = ExtResource("2_gymyn")
+
+[node name="Trail2D" type="Line2D" parent="."]
+position = Vector2(0, 10)
+width_curve = SubResource("Curve_i3pqv")
+default_color = Color(1, 0, 0, 1)
+gradient = SubResource("Gradient_x3wgy")
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+script = ExtResource("2_i3pqv")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 8)
+sprite_frames = SubResource("SpriteFrames_6t5aa")
+animation = &"JumpNull1"
+autoplay = "Run1"
+
+[node name="WallCheckL" type="RayCast2D" parent="."]
+position = Vector2(0, 8)
+target_position = Vector2(-9, 0)
+
+[node name="WallCheckR" type="RayCast2D" parent="."]
+position = Vector2(0, 8)
+target_position = Vector2(9, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 9)
+shape = SubResource("CircleShape2D_x3wgy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("3_i3pqv")
+
+[node name="AttackAreaR" type="Area2D" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackAreaR"]
+position = Vector2(15, 9)
+shape = SubResource("CircleShape2D_7dp3o")
+
+[node name="AttackAreaRTipper" type="Area2D" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackAreaRTipper"]
+position = Vector2(27, 12)
+shape = SubResource("CircleShape2D_ukyrk")
+
+[node name="AttackAreaL" type="Area2D" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackAreaL"]
+position = Vector2(-15, 9)
+shape = SubResource("CircleShape2D_h4iuc")
+
+[node name="AttackAreaLTipper" type="Area2D" parent="."]
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackAreaLTipper"]
+position = Vector2(-27, 12)
+shape = SubResource("CircleShape2D_fd4e3")
+
+[node name="AttackRightDebugText" type="ColorRect" parent="."]
+visible = false
+offset_left = 16.0
+offset_top = -16.0
+offset_right = 48.0
+offset_bottom = 16.0
+
+[node name="AttackLeftDebugText" type="ColorRect" parent="."]
+visible = false
+offset_left = -48.0
+offset_top = -16.0
+offset_right = -16.0
+offset_bottom = 16.0
+
+[node name="WallJumpDownCast" type="RayCast2D" parent="."]
+position = Vector2(0, 9)
+target_position = Vector2(0, 16)
+
+[node name="WallJumpUpCast" type="RayCast2D" parent="."]
+position = Vector2(0, 9)
+target_position = Vector2(0, -16)
+
+[node name="RightAttack" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 2
+texture_filter = 1
+position = Vector2(20, 14)
+sprite_frames = SubResource("SpriteFrames_wpjfl")
+frame = 2
+frame_progress = 0.535661
+
+[connection signal="animation_finished" from="RightAttack" to="AnimationController" method="_on_right_attack_animation_finished"]
