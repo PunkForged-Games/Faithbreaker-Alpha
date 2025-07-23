@@ -74,8 +74,14 @@ var is_invincible: bool = false
 var is_damaged: bool = false
 
 # === Corruption Related Variables ===
-@onready var corruption_movement_modf: float 
+@onready var corruption_movement_modf: float
+@onready var corruption_control_modf: float
+@onready var corruption_jump_modf: float
+@onready var corruption_friction_modf: float
+@onready var corruption_drag_modf: float
+@onready var corruption_atkCD_modf: float
 @onready var corruption_damage_modf: float
+
 
 var dash_direction: Vector2 = Vector2.ZERO
 
@@ -91,7 +97,15 @@ func _ready() -> void:
 	attack_area_R.monitoring = false
 	attack_area_R.body_entered.connect(_on_attack_area_body_entered)
 	modulate = Color.WHITE
+	init_corruption()
+
+func init_corruption():
 	corruption_movement_modf = 1.0
+	corruption_control_modf = 1.0
+	corruption_jump_modf = 1.0
+	corruption_friction_modf = 1.0
+	corruption_drag_modf = 1.0
+	corruption_atkCD_modf = 1.0
 	corruption_damage_modf = 1.0
 
 func _physics_process(delta: float) -> void:
@@ -170,13 +184,13 @@ func handle_movement(input: Vector2, delta: float) -> void:
 		#
 		#return
 	var target_speed = input.x * MAX_SPEED 
-	var accel = ACCEL * corruption_movement_modf if input.x != 0 else (FRICTION * corruption_movement_modf if is_on_floor() else AIR_DRAG * corruption_movement_modf)
+	var accel = ACCEL * corruption_movement_modf if input.x != 0 else (FRICTION * corruption_friction_modf if is_on_floor() else AIR_DRAG * corruption_drag_modf)
 	velocity.x = move_toward(velocity.x, target_speed * corruption_movement_modf, accel * delta)
 	#print(str(corruption_movement_modf))
 
 func handle_gravity(delta: float) -> void:
 	if not is_on_floor() and not is_wall_sliding:
-		velocity.y += GRAVITY * corruption_movement_modf * delta
+		velocity.y += GRAVITY * corruption_jump_modf * delta
 
 func handle_wall_slide() -> void:
 	var touching_wall = is_touching_wall()
@@ -211,16 +225,16 @@ func handle_jumping() -> void:
 
 	if jump_buffer_timer > 0:
 		if is_on_floor() or coyote_timer > 0:
-			velocity.y = JUMP_VELOCITY * corruption_movement_modf
+			velocity.y = JUMP_VELOCITY * corruption_jump_modf
 			jump_buffer_timer = 0
 			coyote_timer = 0
 		elif is_touching_wall() and not is_on_floor():
 			var wall_dir = 1 if wall_check_left.is_colliding() else -1
-			velocity = Vector2(WALL_JUMP_FORCE.x * corruption_movement_modf * wall_dir, WALL_JUMP_FORCE.y * corruption_movement_modf)
+			velocity = Vector2(WALL_JUMP_FORCE.x * corruption_jump_modf * wall_dir, WALL_JUMP_FORCE.y * corruption_jump_modf)
 			wall_jump_lock_timer = WALL_JUMP_LOCK_TIME
 			jump_buffer_timer = 0
 
-	if (Input.is_action_just_released("jump") or Input.is_action_just_released("ui_up")) and velocity.y < 0:
+	if Input.is_action_just_released("jump") and velocity.y < 0:
 		velocity.y *= 0.5
 
 # --- Dash ---
@@ -233,7 +247,7 @@ func start_dash(input_vec: Vector2) -> void:
 		is_dashing = true
 		dash_direction = dir.normalized()
 		dash_timer = DASH_TIME
-		dash_cooldown_timer = DASH_COOLDOWN
+		dash_cooldown_timer = DASH_COOLDOWN * corruption_atkCD_modf
 		velocity = dash_direction * DASH_SPEED
 
 # --- Attack ---
@@ -253,7 +267,7 @@ func start_attack(side: String) -> void:
 		return
 	is_attacking = true
 	attack_timer = ATTACK_TIME
-	attack_cooldown_timer = ATTACK_COOLDOWN_TIME
+	attack_cooldown_timer = ATTACK_COOLDOWN_TIME * corruption_atkCD_modf
 
 	if side == "Left":
 		attack_area_L.monitoring = true
@@ -292,7 +306,6 @@ func handle_timers(delta: float) -> void:
 		jump_buffer_timer -= delta
 	if wall_jump_lock_timer > 0:
 		wall_jump_lock_timer -= delta
-		#print(str(wall_jump_lock_timer))
 	if dash_cooldown_timer > 0 and is_on_floor():
 		dash_cooldown_timer -= delta
 	if attack_cooldown_timer > 0 and not is_attacking:
