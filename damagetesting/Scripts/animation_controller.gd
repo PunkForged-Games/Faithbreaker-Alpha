@@ -6,6 +6,7 @@ extends Node2D
 
 @onready var RightAttack = $"../RightAttack"
 @onready var initial_position = RightAttack.position
+@onready var player = $"../"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -14,7 +15,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	return
+	movement_animation_controller()
 	
 func update_corruption_state():
 	print("success on update")
@@ -30,6 +31,17 @@ func side_attack_animation(facing):
 		RightAttack.flip_h = true
 		RightAttack.visible = true
 		RightAttack.play("default")
+
+func movement_animation_controller():
+	if player.is_on_floor():
+		if player.velocity.x > 0:
+			player_sprite.play("Run1")
+			player_sprite.flip_h = false
+		elif player.velocity.x < 0:
+			player_sprite.play("Run1")
+			player_sprite.flip_h = true
+		else:
+			player_sprite.play("Idle1")
 
 func _on_right_attack_animation_finished() -> void:
 	RightAttack.visible = false

@@ -3,6 +3,8 @@ extends Node2D
 @onready var player = $Player
 @onready var health_bar = $UILayer/CanvasLayer/MarginContainer/HealthBar
 
+@onready var fps_counter = $UILayer/CanvasLayer/Label
+
 func _ready():
 	# Connect already existing enemies
 	for enemy in get_tree().get_nodes_in_group("Enemy"):
@@ -22,6 +24,8 @@ func _process(_delta):
 	else:
 		health_bar.add_theme_color_override("fg", Color.GREEN)
 	#print(health_bar.value)
+	var framerate = Engine.get_frames_per_second()
+	fps_counter.text = str(framerate)
 
 func _on_node_added(node: Node) -> void:
 	if node.is_in_group("Enemy"):

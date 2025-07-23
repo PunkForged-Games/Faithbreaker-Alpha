@@ -4,7 +4,7 @@ extends Node2D
 @onready var animation_controller = $"../AnimationController"
 
 @export var MAX_CORRUPTION: int = 100
-@export var move_speed_multipliers: Array = [1.0, 1.4, 1.8, 2.2, 0.0]
+@export var move_speed_multipliers: Array = [1.0, 1.1, 1.2, 1.5, 0.0]
 # Index 0 => State 0
 # Index 4 => State 4 (Max Corruption)
 

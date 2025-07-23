@@ -195,11 +195,11 @@ ATTACK_COOLDOWN_TIME = 0.2
 GRAVITY = 1400.0
 MAX_SPEED = 300.0
 ACCEL = 1000.0
-FRICTION = 1200.0
-AIR_DRAG = 400.0
+FRICTION = 1600.0
+AIR_DRAG = 500.0
 JUMP_VELOCITY = -500.0
 COYOTE_TIME = 0.15
-WALL_JUMP_FORCE = Vector2(300, -300)
+WALL_JUMP_FORCE = Vector2(350, -350)
 WALL_JUMP_LOCK_TIME = 0.8
 DASH_SPEED = 400.0
 
@@ -228,11 +228,11 @@ autoplay = "Run1"
 
 [node name="WallCheckL" type="RayCast2D" parent="."]
 position = Vector2(0, 8)
-target_position = Vector2(-9, 0)
+target_position = Vector2(-10, 0)
 
 [node name="WallCheckR" type="RayCast2D" parent="."]
 position = Vector2(0, 8)
-target_position = Vector2(9, 0)
+target_position = Vector2(10, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 9)
