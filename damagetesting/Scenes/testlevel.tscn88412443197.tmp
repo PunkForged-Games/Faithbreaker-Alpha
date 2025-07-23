@@ -1236,7 +1236,6 @@ color = Color(0, 0, 0, 1)
 
 [node name="Player" parent="." instance=ExtResource("2_74kyy")]
 position = Vector2(776, 464)
-ATTACK_DMG = 35.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("5_b5yu0")

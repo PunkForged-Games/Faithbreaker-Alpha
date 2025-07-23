@@ -4,8 +4,8 @@ extends CharacterBody2D
 @export_category("Player Controller Settings")
 
 @export_group("Combat Settings")
-@export var ATTACK_DMG: int = 20
-@export var health: int = 100
+@export var ATTACK_DMG: float = 35.0
+@export var health: float = 100.0
 @export var ATTACK_TIME: float = 0.2
 @export var ATTACK_COOLDOWN_TIME: float = 0.5
 @export var INVINCIBILITY_TIME: float = 0.2
@@ -75,6 +75,7 @@ var is_damaged: bool = false
 
 # === Corruption Related Variables ===
 @onready var corruption_movement_modf: float 
+@onready var corruption_damage_modf: float
 
 var dash_direction: Vector2 = Vector2.ZERO
 
@@ -91,6 +92,7 @@ func _ready() -> void:
 	attack_area_R.body_entered.connect(_on_attack_area_body_entered)
 	modulate = Color.WHITE
 	corruption_movement_modf = 1.0
+	corruption_damage_modf = 1.0
 
 func _physics_process(delta: float) -> void:
 	previous_position = current_position
@@ -125,7 +127,7 @@ func _process_dash(delta: float) -> void:
 	if dash_timer <= 0:
 		is_dashing = false
 		return
-	velocity = dash_direction * DASH_SPEED
+	velocity = dash_direction * DASH_SPEED * corruption_movement_modf
 
 func _process_input_and_movement(delta: float) -> void:
 	handle_attack_input()
@@ -136,16 +138,6 @@ func _process_input_and_movement(delta: float) -> void:
 	start_dash(get_input_vector())
 	attack_time_control(delta)
 	attack_cleanup()
-
-#func _interpolate_sprite_position() -> void:
-	#var weight = Engine.get_physics_interpolation_fraction()
-	#var visual_pos = previous_position.lerp(current_position, weight)
-	#sprite.global_position = visual_pos
-	#animated_sprite.global_position = visual_pos
-	#animated_sprite.global_position.y = animated_sprite.global_position.y + 8
-	#if self.velocity.y < 0.2 && self.velocity.x < 0.2:
-		#animated_sprite.global_position = current_position
-		#animated_sprite.global_position.y = animated_sprite.global_position.y + 8
 
 func _interpolate_sprite_position() -> void:
 	var weight = Engine.get_physics_interpolation_fraction()
@@ -177,15 +169,14 @@ func handle_movement(input: Vector2, delta: float) -> void:
 	#if wall_jump_lock_timer > 0 and not is_on_floor() and !wall_jump_down_cast.is_colliding() and !wall_jump_up_cast.is_colliding():
 		#
 		#return
-
-	var target_speed = input.x * MAX_SPEED
-	var accel = ACCEL if input.x != 0 else (FRICTION if is_on_floor() else AIR_DRAG)
+	var target_speed = input.x * MAX_SPEED 
+	var accel = ACCEL * corruption_movement_modf if input.x != 0 else (FRICTION * corruption_movement_modf if is_on_floor() else AIR_DRAG * corruption_movement_modf)
 	velocity.x = move_toward(velocity.x, target_speed * corruption_movement_modf, accel * delta)
-	print(str(corruption_movement_modf))
+	#print(str(corruption_movement_modf))
 
 func handle_gravity(delta: float) -> void:
 	if not is_on_floor() and not is_wall_sliding:
-		velocity.y += GRAVITY * delta
+		velocity.y += GRAVITY * corruption_movement_modf * delta
 
 func handle_wall_slide() -> void:
 	var touching_wall = is_touching_wall()
@@ -220,12 +211,12 @@ func handle_jumping() -> void:
 
 	if jump_buffer_timer > 0:
 		if is_on_floor() or coyote_timer > 0:
-			velocity.y = JUMP_VELOCITY
+			velocity.y = JUMP_VELOCITY * corruption_movement_modf
 			jump_buffer_timer = 0
 			coyote_timer = 0
 		elif is_touching_wall() and not is_on_floor():
 			var wall_dir = 1 if wall_check_left.is_colliding() else -1
-			velocity = Vector2(WALL_JUMP_FORCE.x * wall_dir, WALL_JUMP_FORCE.y)
+			velocity = Vector2(WALL_JUMP_FORCE.x * corruption_movement_modf * wall_dir, WALL_JUMP_FORCE.y * corruption_movement_modf)
 			wall_jump_lock_timer = WALL_JUMP_LOCK_TIME
 			jump_buffer_timer = 0
 
@@ -317,7 +308,8 @@ func handle_timers(delta: float) -> void:
 
 func _on_attack_area_body_entered(body: Node) -> void:
 	if is_attacking and body.is_in_group("Enemy"):
-		emit_signal("deal_damage", ATTACK_DMG, body)
+		emit_signal("deal_damage", ATTACK_DMG * corruption_damage_modf, body)
+		print(ATTACK_DMG * corruption_damage_modf)
 
 func _on_enemy_deal_damage(damage: int, corruption_damage: int, target: Node2D, direction: int) -> void:
 	if target != self:
@@ -342,6 +334,7 @@ func _apply_knockback(direction: int) -> void:
 
 func die() -> void:
 	print("Player died.")
+	corruption_controller.current_corruption = 0
 	if is_developer:
 		global_position = respawn_pos
 		health = 100
