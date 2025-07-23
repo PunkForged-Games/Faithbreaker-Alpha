@@ -4,8 +4,8 @@ extends CharacterBody2D
 @export_category("Player Controller Settings")
 
 @export_group("Combat Settings")
-@export var ATTACK_DMG: int = 20
-@export var health: int = 100
+@export var ATTACK_DMG: float = 35.0
+@export var health: float = 100.0
 @export var ATTACK_TIME: float = 0.2
 @export var ATTACK_COOLDOWN_TIME: float = 0.5
 @export var INVINCIBILITY_TIME: float = 0.2
@@ -75,6 +75,7 @@ var is_damaged: bool = false
 
 # === Corruption Related Variables ===
 @onready var corruption_movement_modf: float 
+@onready var corruption_damage_modf: float
 
 var dash_direction: Vector2 = Vector2.ZERO
 
@@ -91,6 +92,7 @@ func _ready() -> void:
 	attack_area_R.body_entered.connect(_on_attack_area_body_entered)
 	modulate = Color.WHITE
 	corruption_movement_modf = 1.0
+	corruption_damage_modf = 1.0
 
 func _physics_process(delta: float) -> void:
 	previous_position = current_position
@@ -170,7 +172,7 @@ func handle_movement(input: Vector2, delta: float) -> void:
 	var target_speed = input.x * MAX_SPEED 
 	var accel = ACCEL * corruption_movement_modf if input.x != 0 else (FRICTION * corruption_movement_modf if is_on_floor() else AIR_DRAG * corruption_movement_modf)
 	velocity.x = move_toward(velocity.x, target_speed * corruption_movement_modf, accel * delta)
-	print(str(corruption_movement_modf))
+	#print(str(corruption_movement_modf))
 
 func handle_gravity(delta: float) -> void:
 	if not is_on_floor() and not is_wall_sliding:
@@ -306,7 +308,8 @@ func handle_timers(delta: float) -> void:
 
 func _on_attack_area_body_entered(body: Node) -> void:
 	if is_attacking and body.is_in_group("Enemy"):
-		emit_signal("deal_damage", ATTACK_DMG, body)
+		emit_signal("deal_damage", ATTACK_DMG * corruption_damage_modf, body)
+		print(ATTACK_DMG * corruption_damage_modf)
 
 func _on_enemy_deal_damage(damage: int, corruption_damage: int, target: Node2D, direction: int) -> void:
 	if target != self:

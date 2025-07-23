@@ -16,9 +16,6 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	movement_animation_controller()
-	
-func update_corruption_state():
-	print("success on update")
 
 func side_attack_animation(facing):
 	if facing > 0:
