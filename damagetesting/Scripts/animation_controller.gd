@@ -32,16 +32,53 @@ func side_attack_animation(facing):
 		RightAttack.visible = true
 		RightAttack.play("default")
 
+#func movement_animation_controller():
+	#if player.is_on_floor():
+		#if player.velocity.x > 0:
+			#player_sprite.play("Run1")
+			#player_sprite.flip_h = false
+		#elif player.velocity.x < 0:
+			#player_sprite.play("Run1")
+			#player_sprite.flip_h = true
+		#else:
+			#player_sprite.play("Idle1")
+	#elif !player.is_on_floor() and !player.is_wall_sliding:
+		#if player.velocity.x > 0:
+			#player_sprite.flip_h = false
+			#if player.velocity.y >= 0:
+				#player_sprite.play("FallSide1")
+			#elif player.velocity.y < 0:
+				#player_sprite.play("JumpSide1")
+		#elif player.velocity.x < 0:
+			#player_sprite.flip_h = true
+			#if player.velocity.y >= 0:
+				#player_sprite.play("FallSide1")
+			#elif player.velocity.y < 0:
+				#player_sprite.play("JumpSide1")
+		#else:
+			#if player.velocity.y >= 0:
+				#player_sprite.play("FallNull1")
+			#elif player.velocity.y < 0:
+				#player_sprite.play("JumpNull1")
+
 func movement_animation_controller():
 	if player.is_on_floor():
-		if player.velocity.x > 0:
+		if player.velocity.x != 0:
+			player_sprite.flip_h = player.velocity.x < 0
 			player_sprite.play("Run1")
-			player_sprite.flip_h = false
-		elif player.velocity.x < 0:
-			player_sprite.play("Run1")
-			player_sprite.flip_h = true
 		else:
 			player_sprite.play("Idle1")
+		return
+
+	if not player.is_wall_sliding:
+		player_sprite.flip_h = player.velocity.x < 0
+
+		if player.velocity.x != 0:
+			player_sprite.play("FallSide1" if player.velocity.y >= 0 else "JumpSide1")
+		else:
+			player_sprite.play("FallNull1" if player.velocity.y >= 0 else "JumpNull1")
+
+			
 
 func _on_right_attack_animation_finished() -> void:
 	RightAttack.visible = false
