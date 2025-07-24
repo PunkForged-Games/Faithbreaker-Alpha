@@ -1,7 +1,18 @@
 extends Node2D
 
 @onready var player = $Player
+@onready var corruption_controller = $Player/CorruptionController
+@onready var corruption_bar = $UILayer/CanvasLayer/MarginContainer2/CorruptionBar
 @onready var health_bar = $UILayer/CanvasLayer/MarginContainer/HealthBar
+
+@onready var corruption_bar_color: Dictionary = {
+	0: Color.WEB_GREEN,
+	1: Color.YELLOW,
+	2: Color.ORANGE,
+	3: Color.RED,
+	4: Color.DARK_RED
+}
+
 
 @onready var fps_counter = $UILayer/CanvasLayer/Label
 
@@ -15,6 +26,8 @@ func _ready():
 
 func _process(_delta):
 	health_bar.value = player.health
+	corruption_bar.value = corruption_controller.current_corruption
+	corruption_bar.tint_progress = corruption_bar_color[corruption_controller.corruption_state]
 	# Change color based on health %
 	var percent = float(player.health) / float(health_bar.max_value)
 	if percent < 0.25:

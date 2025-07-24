@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://cunk0mlx0l28a"]
+[gd_scene load_steps=17 format=4 uid="uid://cunk0mlx0l28a"]
 
 [ext_resource type="Script" uid="uid://g30snie74yk5" path="res://Scripts/testlevel.gd" id="1_74kyy"]
 [ext_resource type="PackedScene" uid="uid://dj7i70ks6sw7a" path="res://Scenes/enemy.tscn" id="1_pi5jr"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bs1s6rar1f2a2" path="res://Assets/other/health_Bar/HealthBarOver.png" id="8_jbk63"]
 [ext_resource type="Texture2D" uid="uid://dh43gl5pa152f" path="res://Assets/other/health_Bar/HealthBarUnder2.png" id="8_p8bes"]
 [ext_resource type="Texture2D" uid="uid://jgsm7ytlbqu" path="res://Assets/Characters/_spriteSheets/VFX/UI/CorruptionBarProgress.png" id="11_pwbg4"]
+[ext_resource type="PackedScene" uid="uid://7l6wjyqrgl6p" path="res://Scenes/health_pickup.tscn" id="12_p8bes"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vfacy"]
 texture = ExtResource("6_8ws1j")
@@ -1229,7 +1230,6 @@ texture_filter = 1
 script = ExtResource("1_74kyy")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-visible = false
 offset_left = 20.0
 offset_top = -379.0
 offset_right = 2568.0
@@ -1268,6 +1268,9 @@ position = Vector2(1724, 284)
 
 [node name="Enemy7" parent="." instance=ExtResource("1_pi5jr")]
 position = Vector2(1979, 456)
+
+[node name="HealthPickup" parent="." instance=ExtResource("12_p8bes")]
+position = Vector2(683, 473)
 
 [node name="UILayer" type="Node2D" parent="."]
 
