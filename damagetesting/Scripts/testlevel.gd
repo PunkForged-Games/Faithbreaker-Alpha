@@ -14,7 +14,7 @@ extends Node2D
 }
 
 
-@onready var fps_counter = $UILayer/CanvasLayer/Label
+@onready var fps_counter = $UILayer/CanvasLayer/FPSCounter
 
 func _ready():
 	# Connect already existing enemies
@@ -38,7 +38,7 @@ func _process(_delta):
 		health_bar.add_theme_color_override("fg", Color.GREEN)
 	#print(health_bar.value)
 	var framerate = Engine.get_frames_per_second()
-	fps_counter.text = str(framerate)
+	fps_counter.text = "FPS: " + str(framerate) + " " + "X.Velocity(" + str(roundi(player.velocity.x)) + ")" + " " + "Y.Velocity(" + str(roundi(player.velocity.y)) + ")"
 
 func _on_node_added(node: Node) -> void:
 	if node.is_in_group("Enemy"):
