@@ -1,0 +1,25 @@
+[remap]
+
+importer="font_data_image"
+type="FontFile"
+uid="uid://dsnf2afrhbekr"
+path="res://.godot/imported/TorusSans.png-fefa0fd331b6c0ec16bc258548ee8675.fontdata"
+
+[deps]
+
+source_file="res://Assets/Fonts/TorusSans.png"
+dest_files=["res://.godot/imported/TorusSans.png-fefa0fd331b6c0ec16bc258548ee8675.fontdata"]
+
+[params]
+
+character_ranges=PackedStringArray("")
+kerning_pairs=PackedStringArray()
+columns=96
+rows=1
+image_margin=Rect2i(0, 0, 0, 0)
+character_margin=Rect2i(0, 0, 0, 0)
+ascent=0
+descent=0
+fallbacks=[null]
+compress=true
+scaling_mode=2
