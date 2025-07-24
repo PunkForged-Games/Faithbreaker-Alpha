@@ -113,18 +113,14 @@ func init_corruption():
 func _physics_process(delta: float) -> void:
 	previous_position = current_position
 	current_position = global_position
-
 	handle_timers(delta)
-
 	if is_damaged:
 		_process_knockback(delta)
 		return
-
 	if is_dashing:
 		_process_dash(delta)
 	else:
 		_process_input_and_movement(delta)
-
 	move_and_slide()
 	update_state()
 
