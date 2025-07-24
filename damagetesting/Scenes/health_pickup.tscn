@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://7l6wjyqrgl6p"]
+[gd_scene load_steps=6 format=3 uid="uid://7l6wjyqrgl6p"]
 
 [ext_resource type="Texture2D" uid="uid://dnuejriwgnsvt" path="res://Assets/Characters/_spriteSheets/VFX/UI/00.png" id="1_gvws8"]
+[ext_resource type="Script" uid="uid://ctau7mdtnjgmt" path="res://Scenes/health_pickup.gd" id="1_lj2jr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lj2jr"]
 atlas = ExtResource("1_gvws8")
@@ -13,6 +14,7 @@ radius = 7.0
 radius = 13.0384
 
 [node name="HealthPickup" type="Node2D"]
+script = ExtResource("1_lj2jr")
 
 [node name="HealthPickupBody" type="CharacterBody2D" parent="."]
 collision_layer = 8

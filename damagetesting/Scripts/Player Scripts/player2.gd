@@ -5,6 +5,7 @@ extends CharacterBody2D
 
 @export_group("Combat Settings")
 @export var ATTACK_DMG: float = 35.0
+@export var MAX_HEALTH: float = 100
 @export var health: float = 100.0
 @export var ATTACK_TIME: float = 0.2
 @export var ATTACK_COOLDOWN_TIME: float = 0.5
@@ -340,6 +341,8 @@ func _apply_knockback(direction: int) -> void:
 	is_invincible = true
 	invincibility_timer = INVINCIBILITY_TIME
 	camera_controller.shake_intensity = 15
+	
+	# Here down: add signal function to handle health + corruption pickups for use in-game.
 
 func die() -> void:
 	print("Player died.")
