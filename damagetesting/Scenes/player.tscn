@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://cr4xnene5qacq"]
+[gd_scene load_steps=32 format=3 uid="uid://cr4xnene5qacq"]
 
 [ext_resource type="Script" uid="uid://k7giox06qsah" path="res://Scripts/Player Scripts/player2.gd" id="1_i3pqv"]
 [ext_resource type="Script" uid="uid://1pskfjecq6rc" path="res://Scripts/Animation Controller/animation_controller.gd" id="2_gymyn"]
@@ -108,8 +108,8 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_x3wgy"]
-radius = 7.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_igrcy"]
+radius = 7.01783
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7dp3o"]
 radius = 8.0
@@ -187,6 +187,9 @@ animations = [{
 "speed": 20.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_qqcod"]
+radius = 8.0
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_i3pqv")
@@ -198,6 +201,7 @@ FRICTION = 1600.0
 AIR_DRAG = 500.0
 JUMP_VELOCITY = -500.0
 COYOTE_TIME = 0.15
+MAX_FALL_SPEED = 525.0
 WALL_JUMP_FORCE = Vector2(350, -350)
 WALL_JUMP_LOCK_TIME = 0.8
 DASH_SPEED = 400.0
@@ -235,7 +239,7 @@ target_position = Vector2(10, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 9)
-shape = SubResource("CircleShape2D_x3wgy")
+shape = SubResource("CircleShape2D_igrcy")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
@@ -300,5 +304,17 @@ position = Vector2(20, 14)
 sprite_frames = SubResource("SpriteFrames_wpjfl")
 frame = 2
 frame_progress = 0.535661
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_qqcod")
+
+[node name="Area2D2" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
+position = Vector2(0, 24)
+shape = SubResource("CircleShape2D_qqcod")
 
 [connection signal="animation_finished" from="RightAttack" to="AnimationController" method="_on_right_attack_animation_finished"]

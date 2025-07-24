@@ -25,32 +25,26 @@ func _ready():
 func _process(delta):
 	if not _player:
 		return
-
 	var player_pos = _player.global_position
 	var move_delta = player_pos - _last_player_position
 	_last_player_position = player_pos
-
 	# Only update velocity when player actually moves (not from camera motion)
 	if move_delta.length() > 0.1:
 		_velocity = lerp(_velocity, move_delta.normalized(), delta * direction_lerp_speed)
 	else:
 		_velocity = lerp(_velocity, Vector2.ZERO, delta * direction_lerp_speed)
-
 	# Optional: Only apply directional offset on X
 	var directional_offset = Vector2(_velocity.x, 0) * directional_offset_strength
 	_current_offset = lerp(_current_offset, directional_offset, delta * direction_lerp_speed)
-
 	# Final target with offset
 	var target_pos = player_pos + _current_offset
 	var camera_offset = target_pos - global_position
-
 	# Deadzone clamp
 	var deadzone_half = deadzone_size * 0.5
 	if abs(camera_offset.x) > deadzone_half.x:
 		global_position.x += (camera_offset.x - sign(camera_offset.x) * deadzone_half.x) * delta * follow_speed
 	if abs(camera_offset.y) > deadzone_half.y:
 		global_position.y += (camera_offset.y - sign(camera_offset.y) * deadzone_half.y) * delta * follow_speed
-
 	# Shake
 	if shake_intensity > 0.01:
 		_shake_offset = Vector2(

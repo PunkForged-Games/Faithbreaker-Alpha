@@ -22,7 +22,7 @@ extends CharacterBody2D
 @export var SUPER_JUMP_VELOCITY: float = -1000.0
 @export var COYOTE_TIME: float = 0.1
 @export var JUMP_BUFFER_TIME: float = 0.1
-@export var MAX_FALL_SPEED: float = 2
+@export var MAX_FALL_SPEED: float = 400.0
 
 @export_group("Wall Jump Settings")
 @export var WALL_JUMP_FORCE: Vector2 = Vector2(250, -300)
@@ -49,6 +49,8 @@ signal deal_damage(damage: int, target: Node)
 
 @onready var animation_controller = $AnimationController
 @onready var corruption_controller = $CorruptionController
+
+@onready var camera_controller = $"../Camera2D"
 
 # === STATE VARIABLES ===
 var previous_position: Vector2 = Vector2.ZERO
@@ -111,18 +113,14 @@ func init_corruption():
 func _physics_process(delta: float) -> void:
 	previous_position = current_position
 	current_position = global_position
-
 	handle_timers(delta)
-
 	if is_damaged:
 		_process_knockback(delta)
 		return
-
 	if is_dashing:
 		_process_dash(delta)
 	else:
 		_process_input_and_movement(delta)
-
 	move_and_slide()
 	update_state()
 
@@ -186,6 +184,8 @@ func handle_movement(input: Vector2, delta: float) -> void:
 	var target_speed = input.x * MAX_SPEED 
 	var accel = ACCEL * corruption_movement_modf if input.x != 0 else (FRICTION * corruption_friction_modf if is_on_floor() else AIR_DRAG * corruption_drag_modf)
 	velocity.x = move_toward(velocity.x, target_speed * corruption_movement_modf, accel * delta)
+	if velocity.y > MAX_FALL_SPEED:
+		velocity.y = MAX_FALL_SPEED
 	#print(str(corruption_movement_modf))
 
 func handle_gravity(delta: float) -> void:
@@ -228,7 +228,7 @@ func handle_jumping() -> void:
 			velocity.y = JUMP_VELOCITY * corruption_jump_modf
 			jump_buffer_timer = 0
 			coyote_timer = 0
-		elif is_touching_wall() and not is_on_floor():
+		elif is_touching_wall() and not is_on_floor() and !wall_jump_down_cast.is_colliding():
 			var wall_dir = 1 if wall_check_left.is_colliding() else -1
 			velocity = Vector2(WALL_JUMP_FORCE.x * corruption_jump_modf * wall_dir, WALL_JUMP_FORCE.y * corruption_jump_modf)
 			wall_jump_lock_timer = WALL_JUMP_LOCK_TIME
@@ -251,7 +251,6 @@ func start_dash(input_vec: Vector2) -> void:
 		velocity = dash_direction * DASH_SPEED
 
 # --- Attack ---
-
 func handle_attack_input() -> void:
 	if Input.is_action_just_pressed("Attack_Left"):
 		start_attack("Left")
@@ -268,7 +267,6 @@ func start_attack(side: String) -> void:
 	is_attacking = true
 	attack_timer = ATTACK_TIME
 	attack_cooldown_timer = ATTACK_COOLDOWN_TIME * corruption_atkCD_modf
-
 	if side == "Left":
 		attack_area_L.monitoring = true
 		animation_controller.side_attack_animation(-1)
@@ -289,7 +287,6 @@ func attack_cleanup() -> void:
 		attack_area_R.monitoring = false
 
 # --- Utility ---
-
 func is_touching_wall() -> bool:
 	return wall_check_left.is_colliding() or wall_check_right.is_colliding()
 
@@ -318,7 +315,6 @@ func handle_timers(delta: float) -> void:
 		is_damaged_timer -= delta
 
 # --- Signals ---
-
 func _on_attack_area_body_entered(body: Node) -> void:
 	if is_attacking and body.is_in_group("Enemy"):
 		emit_signal("deal_damage", ATTACK_DMG * corruption_damage_modf, body)
@@ -329,7 +325,6 @@ func _on_enemy_deal_damage(damage: int, corruption_damage: int, target: Node2D, 
 		return
 	if is_invincible:
 		return
-
 	health -= damage
 	corruption_controller.take_corruption_damage(corruption_damage)
 	print("Player took ", damage, " damage! Health is now: ", health)
@@ -344,6 +339,7 @@ func _apply_knockback(direction: int) -> void:
 	is_damaged_timer = IS_DAMAGED_DURATION
 	is_invincible = true
 	invincibility_timer = INVINCIBILITY_TIME
+	camera_controller.shake_intensity = 15
 
 func die() -> void:
 	print("Player died.")
