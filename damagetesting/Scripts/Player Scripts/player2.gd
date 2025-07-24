@@ -251,7 +251,6 @@ func start_dash(input_vec: Vector2) -> void:
 		velocity = dash_direction * DASH_SPEED
 
 # --- Attack ---
-
 func handle_attack_input() -> void:
 	if Input.is_action_just_pressed("Attack_Left"):
 		start_attack("Left")
@@ -268,7 +267,6 @@ func start_attack(side: String) -> void:
 	is_attacking = true
 	attack_timer = ATTACK_TIME
 	attack_cooldown_timer = ATTACK_COOLDOWN_TIME * corruption_atkCD_modf
-
 	if side == "Left":
 		attack_area_L.monitoring = true
 		animation_controller.side_attack_animation(-1)
@@ -289,7 +287,6 @@ func attack_cleanup() -> void:
 		attack_area_R.monitoring = false
 
 # --- Utility ---
-
 func is_touching_wall() -> bool:
 	return wall_check_left.is_colliding() or wall_check_right.is_colliding()
 
@@ -318,7 +315,6 @@ func handle_timers(delta: float) -> void:
 		is_damaged_timer -= delta
 
 # --- Signals ---
-
 func _on_attack_area_body_entered(body: Node) -> void:
 	if is_attacking and body.is_in_group("Enemy"):
 		emit_signal("deal_damage", ATTACK_DMG * corruption_damage_modf, body)
@@ -329,7 +325,6 @@ func _on_enemy_deal_damage(damage: int, corruption_damage: int, target: Node2D, 
 		return
 	if is_invincible:
 		return
-
 	health -= damage
 	corruption_controller.take_corruption_damage(corruption_damage)
 	print("Player took ", damage, " damage! Health is now: ", health)
