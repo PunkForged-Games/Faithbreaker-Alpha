@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://g30snie74yk5" path="res://Scripts/testlevel.gd" id="1_74kyy"]
 [ext_resource type="PackedScene" uid="uid://dj7i70ks6sw7a" path="res://Scenes/enemy.tscn" id="1_pi5jr"]
 [ext_resource type="PackedScene" uid="uid://cr4xnene5qacq" path="res://Scenes/player.tscn" id="2_74kyy"]
-[ext_resource type="Script" uid="uid://bwb53dj38lre1" path="res://Scripts/Camera/CameraController.gd" id="5_b5yu0"]
+[ext_resource type="Script" uid="uid://bwb53dj38lre1" path="res://Scripts/Camera/CameraController.gd" id="3_txr35"]
 [ext_resource type="Texture2D" uid="uid://b03f4noydl1j5" path="res://Assets/other/_dev/TestLevelText.png" id="6_8ws1j"]
 [ext_resource type="Texture2D" uid="uid://dxlxd8nyl58vh" path="res://Assets/Tilesets/monochrome_tilemap_transparent_packed.png" id="6_lnvd4"]
 [ext_resource type="Texture2D" uid="uid://osfhfvbjofkk" path="res://Assets/Tilesets/monochrome_tilemap_packed.png" id="7_k5jnp"]
@@ -1245,7 +1245,8 @@ color = Color(0, 0, 0, 1)
 position = Vector2(776, 464)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-script = ExtResource("5_b5yu0")
+texture_filter = 1
+script = ExtResource("3_txr35")
 player_path = NodePath("../Player")
 
 [node name="Enemy3" parent="." instance=ExtResource("1_pi5jr")]
@@ -1283,9 +1284,9 @@ position = Vector2(683, 473)
 
 [node name="MarginContainer" type="MarginContainer" parent="UILayer/CanvasLayer"]
 offset_left = 16.0
-offset_top = 194.0
+offset_top = 239.0
 offset_right = 176.0
-offset_bottom = 210.0
+offset_bottom = 255.0
 
 [node name="HealthBar" type="TextureProgressBar" parent="UILayer/CanvasLayer/MarginContainer"]
 texture_filter = 1
@@ -1296,10 +1297,10 @@ texture_over = ExtResource("7_k8edd")
 texture_progress = ExtResource("8_jbk63")
 
 [node name="MarginContainer2" type="MarginContainer" parent="UILayer/CanvasLayer"]
-offset_left = 224.0
-offset_top = 194.0
-offset_right = 384.0
-offset_bottom = 211.0
+offset_left = 306.0
+offset_top = 240.0
+offset_right = 466.0
+offset_bottom = 257.0
 
 [node name="CorruptionBar" type="TextureProgressBar" parent="UILayer/CanvasLayer/MarginContainer2"]
 texture_filter = 1
@@ -1311,7 +1312,7 @@ texture_progress = ExtResource("12_txr35")
 [node name="FPSCounter" type="RichTextLabel" parent="UILayer/CanvasLayer"]
 texture_filter = 1
 offset_right = 164.0
-offset_bottom = 48.0
+offset_bottom = 235.0
 theme = SubResource("Theme_gy1wm")
 theme_override_colors/default_color = Color(0, 1, 0, 1)
 text = "FPS"

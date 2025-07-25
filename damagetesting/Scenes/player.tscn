@@ -16,7 +16,7 @@
 
 [sub_resource type="Curve" id="Curve_i3pqv"]
 _limits = [0.0, 1.0, 0.0, 1.5]
-_data = [Vector2(0.0191489, 0.708621), 0.0, 0.0, 0, 0, Vector2(0.376596, 0.484483), 0.0, 0.0, 0, 0, Vector2(1.5, 0.20431), 0.0, 0.0, 0, 0]
+_data = [Vector2(0.0191489, 0.708621), 0.0, 0.0, 0, 0, Vector2(0.376596, 0.484483), 0.0, 0.0, 0, 0, Vector2(1.12987, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Gradient" id="Gradient_x3wgy"]

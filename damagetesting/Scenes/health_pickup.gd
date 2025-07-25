@@ -6,7 +6,7 @@ extends Node2D
 func _ready() -> void:
 	print(str(player))
 	
-func heal_player(heal_amount):
+func heal_player():
 	if player.MAX_HEALTH - player.health >= heal_amount:
 		player.health += heal_amount
 	else:

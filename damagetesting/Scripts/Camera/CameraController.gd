@@ -63,3 +63,6 @@ func _process(delta):
 	else:
 		follow_speed = 5.0
 	global_position += _shake_offset
+	var speed = _player.velocity.length()
+	var target_zoom = clamp(1.0 - (speed * 0.002), 0.7, 1.0)
+	self.zoom = self.zoom.lerp(Vector2(target_zoom, target_zoom), 5 * delta)
